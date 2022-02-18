@@ -146,7 +146,7 @@ class Console:
         else:
             opened_at = None
 
-        self._casebook.new_case(number, customer, title, tier, opened_at=opened_at)
+        self._casebook.new_case(int(number), customer, title, int(tier), opened_at=opened_at)
         self._casebook.write_csv()
 
     def exit_handler(self):

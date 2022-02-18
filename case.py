@@ -15,7 +15,7 @@ class Case:
         self.num = int(num)
         self.customer = customer
         self.title = title
-        self.tier = tier
+        self.tier = int(tier)
         self.lastResp = lastResp
         self.status = status
         try_parse = self._parseDatetime(self.lastResp, self._date_format)

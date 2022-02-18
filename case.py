@@ -106,7 +106,9 @@ class Case:
             return False
 
     def isToDo(self):
-        return self.status == STATUS_WAITING_ON_ENGINEER or self.status == STATUS_FROZEN
+        return self.status == STATUS_WAITING_ON_ENGINEER \
+               or self.status == STATUS_FROZEN \
+               or self.status == STATUS_FIRST_RESPONSE
 
     def getDueString(self):
         due = self.getDueDate()

@@ -12,7 +12,7 @@ class Case:
     _date_format = "%Y.%m.%d. %H:%M"
 
     def __init__(self, num, customer, title, tier, lastResp=None, status=None):
-        self.num = num
+        self.num = int(num)
         self.customer = customer
         self.title = title
         self.tier = tier

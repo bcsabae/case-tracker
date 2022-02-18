@@ -7,8 +7,8 @@ class Casebook:
 
     def __str__(self):
         out = ""
-        for case in self.cases:
-            out += str(case)
+        for _case in self.cases:
+            out += str(_case)
             out += "\r\n"
         return out
 
@@ -40,14 +40,14 @@ class Casebook:
         print("")
         print('-' * all_spaces * space)
 
-        for case in cases:
-            print(case.num, end=(' ' * (space - len(str(case.num)))))
-            print(case.customer, end=(' ' * (space - len(case.customer))))
-            print(case.title, end=(' ' * (2 * space - len(case.title))))
-            print(case.tier, end=(' ' * (space - len(str(case.tier)))))
-            print(case.getLastRespString(), end=(' ' * (2 * space - len(case.getLastRespString()))))
-            print(case.getDueString(), end=(' ' * (2 * space - len(case.getDueString()))))
-            print(case.status, end=(' ' * (2 * space - len(case.status))))
+        for _case in cases:
+            print(_case.num, end=(' ' * (space - len(str(_case.num)))))
+            print(_case.customer, end=(' ' * (space - len(_case.customer))))
+            print(_case.title, end=(' ' * (2 * space - len(_case.title))))
+            print(_case.tier, end=(' ' * (space - len(str(_case.tier)))))
+            print(_case.getLastRespString(), end=(' ' * (2 * space - len(_case.getLastRespString()))))
+            print(_case.getDueString(), end=(' ' * (2 * space - len(_case.getDueString()))))
+            print(_case.status, end=(' ' * (2 * space - len(_case.status))))
             print("")
 
     def read_csv(self, filename):
@@ -62,22 +62,22 @@ class Casebook:
         if filename is None:
             filename = self._library_file
         with open(filename, 'w') as f:
-            for case in self.cases:
-                f.write(case.toCsv() + '\r\n')
+            for _case in self.cases:
+                f.write(_case.toCsv() + '\r\n')
         return
 
     def add_case(self, c):
         self.cases.append(c)
 
     def find_case(self, number):
-        for case in self.cases:
-            if case.num == number:
-                return case
+        for _case in self.cases:
+            if _case.num == number:
+                return _case
         return None
 
     def remove_case(self, number):
-        for ind, case in enumerate(self.cases):
-            if case.num == number:
+        for ind, _case in enumerate(self.cases):
+            if _case.num == number:
                 self.cases.pop(ind)
                 return True
         return False
@@ -91,23 +91,23 @@ class Casebook:
 
     def todo(self):
         todo_cases = Casebook()
-        for case in self.cases:
-            if case.isToDo():
-                todo_cases.add_case(case)
+        for _case in self.cases:
+            if _case.isToDo():
+                todo_cases.add_case(_case)
         return todo_cases
 
     def today(self):
         today_cases = Casebook()
-        for case in self.cases:
-            if case.isDueToday():
-                today_cases.add_case(case)
+        for _case in self.cases:
+            if _case.isDueToday():
+                today_cases.add_case(_case)
         return today_cases
 
     def tomorrow(self):
         tomorrow_cases = Casebook()
-        for case in self.cases:
-            if case.isDueTomorrow():
-                tomorrow_cases.add_case(case)
+        for _case in self.cases:
+            if _case.isDueTomorrow():
+                tomorrow_cases.add_case(_case)
         return tomorrow_cases
 
     def customer_answered(self, num, when=None):

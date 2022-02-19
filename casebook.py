@@ -45,15 +45,15 @@ class Casebook:
             print(_case.customer, end=(' ' * (space - len(_case.customer))))
             print(_case.title, end=(' ' * (2 * space - len(_case.title))))
             print(_case.tier, end=(' ' * (space - len(str(_case.tier)))))
-            print(_case.getLastRespString(), end=(' ' * (2 * space - len(_case.getLastRespString()))))
-            print(_case.getDueString(), end=(' ' * (2 * space - len(_case.getDueString()))))
+            print(_case.get_last_resp_string(), end=(' ' * (2 * space - len(_case.get_last_resp_string()))))
+            print(_case.get_due_string(), end=(' ' * (2 * space - len(_case.get_due_string()))))
             print(_case.status, end=(' ' * (2 * space - len(_case.status))))
             print("")
 
     def read_csv(self, filename):
         with open(filename, 'r') as f:
             for line in f.readlines():
-                c = case.Case.fromCsv(line.rstrip())
+                c = case.Case.from_csv(line.rstrip())
                 self.cases.append(c)
         self._library_file = filename
         return
@@ -63,7 +63,7 @@ class Casebook:
             filename = self._library_file
         with open(filename, 'w') as f:
             for _case in self.cases:
-                f.write(_case.toCsv() + '\r\n')
+                f.write(_case.to_csv() + '\r\n')
         return
 
     def add_case(self, c):
@@ -92,21 +92,21 @@ class Casebook:
     def todo(self):
         todo_cases = Casebook()
         for _case in self.cases:
-            if _case.isToDo():
+            if _case.is_todo():
                 todo_cases.add_case(_case)
         return todo_cases
 
     def today(self):
         today_cases = Casebook()
         for _case in self.cases:
-            if _case.isDueToday():
+            if _case.is_due_today():
                 today_cases.add_case(_case)
         return today_cases
 
     def tomorrow(self):
         tomorrow_cases = Casebook()
         for _case in self.cases:
-            if _case.isDueTomorrow():
+            if _case.is_due_tomorrow():
                 tomorrow_cases.add_case(_case)
         return tomorrow_cases
 

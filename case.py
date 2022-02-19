@@ -1,7 +1,7 @@
 import datetime
 import datetime as dt
 
-STATUS_WAITING_ON_ENGINEER = "Waiting on AE"
+STATUS_WAITING_ON_ENGINEER = "Waiting on me"
 STATUS_WAITING_ON_CUSTOMER = "Waiting on customer"
 STATUS_FIRST_RESPONSE = "First response needed"
 STATUS_FROZEN = "Frozen"
@@ -18,7 +18,7 @@ class Case:
         self.tier = int(tier)
         self.lastResp = lastResp
         self.status = status
-        try_parse = self._parseDatetime(self.lastResp, self._date_format)
+        try_parse = self._parse_datetime(self.lastResp, self._date_format)
         if try_parse is None:
             exit(-1)
 
@@ -33,11 +33,11 @@ class Case:
         out += self.title + ';'
         out += str(self.tier) + ';'
         out += self.lastResp.strftime(self._date_format) + ';'
-        out += self.getDueString() + ';'
+        out += self.get_due_string() + ';'
         out += self.status
         return out
 
-    def toCsv(self):
+    def to_csv(self):
         out = ""
         out += str(self.num) + ';'
         out += self.customer + ';'
@@ -48,7 +48,7 @@ class Case:
         return out
 
     @staticmethod
-    def fromCsv(csv_str):
+    def from_csv(csv_str):
         c_arr = csv_str.split(';')
 
         num = int(c_arr[0])
@@ -62,66 +62,66 @@ class Case:
 
         return c
 
-    def customerAnswered(self, when=None):
-        updated_at = self._parseDatetime(when, self._date_format)
+    def customer_answered(self, when=None):
+        updated_at = self._parse_datetime(when, self._date_format)
         if updated_at is None:
             return
         self.lastResp = updated_at
         self.status = STATUS_WAITING_ON_ENGINEER
 
-    def aeAnswered(self):
+    def engineer_answered(self):
         self.status = STATUS_WAITING_ON_CUSTOMER
 
     def freeze(self):
         self.status = STATUS_FROZEN
 
-    def getDueDate(self):
+    def get_due_date(self):
         if self.status == STATUS_WAITING_ON_CUSTOMER or self.status == STATUS_FROZEN:
             return None
         if self.status == STATUS_WAITING_ON_ENGINEER:
-            return self._nextResponseDue(self.lastResp)
+            return self._next_response_due(self.lastResp)
         if self.status == STATUS_FIRST_RESPONSE:
-            return self._firstResponseDue(self.lastResp)
+            return self._first_response_due(self.lastResp)
 
-    def isDueToday(self):
-        due = self.getDueDate()
+    def is_due_today(self):
+        due = self.get_due_date()
         if due is None:
             return False
-        threshold = self._addWeekend(datetime.datetime.today(), 1)
+        threshold = self._add_weekend(datetime.datetime.today(), 1)
         threshold = threshold.replace(hour=int(TODAY_THRESHOLD.split(':')[0]), minute=int(TODAY_THRESHOLD.split(':')[1]))
         if due <= threshold:
             return True
         else:
             return False
 
-    def isDueTomorrow(self):
-        due = self.getDueDate()
+    def is_due_tomorrow(self):
+        due = self.get_due_date()
         if due is None:
             return False
-        threshold = self._addWeekend(datetime.datetime.today(), 2)
+        threshold = self._add_weekend(datetime.datetime.today(), 2)
         threshold = threshold.replace(hour=int(TODAY_THRESHOLD.split(':')[0]), minute=int(TODAY_THRESHOLD.split(':')[1]))
         if due <= threshold:
             return True
         else:
             return False
 
-    def isToDo(self):
+    def is_todo(self):
         return self.status == STATUS_WAITING_ON_ENGINEER \
                or self.status == STATUS_FROZEN \
                or self.status == STATUS_FIRST_RESPONSE
 
-    def getDueString(self):
-        due = self.getDueDate()
+    def get_due_string(self):
+        due = self.get_due_date()
         if due is None:
             return ""
         else:
             return due.strftime(self._date_format)
 
-    def getLastRespString(self):
+    def get_last_resp_string(self):
         return self.lastResp.strftime(self._date_format)
 
     @staticmethod
-    def _parseDatetime(when, format):
+    def _parse_datetime(when, format):
         if when is None:
             updated_at = dt.datetime.today()
         elif type(when) == dt.datetime:
@@ -138,7 +138,7 @@ class Case:
                 return None
         return updated_at
 
-    def _nextResponseDue(self, updated_at):
+    def _next_response_due(self, updated_at):
         delay = 0
 
         if self.tier == 1:
@@ -150,9 +150,9 @@ class Case:
         elif self.tier == 4:
             delay += 4
 
-        return self._addWeekend(updated_at, delay)
+        return self._add_weekend(updated_at, delay)
 
-    def _firstResponseDue(self, opened_at):
+    def _first_response_due(self, opened_at):
         delay = 0
 
         if self.tier == 1:
@@ -164,10 +164,10 @@ class Case:
         elif self.tier == 4:
             delay += 4
 
-        return self._addWeekend(opened_at, delay)
+        return self._add_weekend(opened_at, delay)
 
     @staticmethod
-    def _addWeekend(to, delay):
+    def _add_weekend(to, delay):
         add_delay = 0
         while delay:
             add_delay += 1

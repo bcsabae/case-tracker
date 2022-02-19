@@ -1,5 +1,6 @@
 from casebook import Casebook
 
+
 class Console:
     # commands to support:
     # list [all, todo, today, tomorrow]
@@ -88,7 +89,6 @@ class Console:
             else:
                 return False
 
-
     def list_all_handler(self, *args):
         self._casebook.pretty_print(self._casebook.cases)
 
@@ -149,14 +149,16 @@ class Console:
         self._casebook.new_case(int(number), customer, title, int(tier), opened_at=opened_at)
         self._casebook.write_csv()
 
-    def exit_handler(self):
+    @staticmethod
+    def exit_handler():
         exit()
         return True
 
-    def help_handler(self):
+    @staticmethod
+    def help_handler():
         print("Supported commands:")
         print("list all/todo/today/tomorrow")
         print("case num [num] update/answer/freeze/close [date:optional]")
         print("case new [number] [customer] [title] [tier] [opened_at:optional]")
         print("exit")
-        return True
+        return

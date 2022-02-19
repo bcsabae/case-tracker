@@ -1,5 +1,6 @@
 import case
 
+
 class Casebook:
     def __init__(self):
         self.cases = []
@@ -24,7 +25,8 @@ class Casebook:
         else:
             raise StopIteration
 
-    def pretty_print(self, cases):
+    @staticmethod
+    def pretty_print(cases):
         space = 12
         heads = ["Number", "Customer", "Title", "Tier", "Last response", "Next response due", "Status"]
         all_spaces = 0

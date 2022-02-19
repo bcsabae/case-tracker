@@ -7,6 +7,7 @@ STATUS_FIRST_RESPONSE = "First response needed"
 STATUS_FROZEN = "Frozen"
 TODAY_THRESHOLD = "10:00"
 
+
 class Case:
 
     _date_format = "%Y.%m.%d. %H:%M"

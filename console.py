@@ -1,4 +1,4 @@
-from casebook import Casebook
+
 
 class Console:
     # commands to support:
@@ -35,6 +35,8 @@ class Console:
 
     def read_command(self):
         command = input('> ')
+        if not command:
+            return
         if not self.parse_command(command):
             print("Unsupported command")
         return
@@ -87,7 +89,6 @@ class Console:
                     handlers = command
             else:
                 return False
-
 
     def list_all_handler(self, *args):
         self._casebook.pretty_print(self._casebook.cases)
@@ -146,17 +147,19 @@ class Console:
         else:
             opened_at = None
 
-        self._casebook.new_case(number, customer, title, tier, opened_at=opened_at)
+        self._casebook.new_case(int(number), customer, title, int(tier), opened_at=opened_at)
         self._casebook.write_csv()
 
-    def exit_handler(self):
+    @staticmethod
+    def exit_handler():
         exit()
         return True
 
-    def help_handler(self):
+    @staticmethod
+    def help_handler():
         print("Supported commands:")
         print("list all/todo/today/tomorrow")
         print("case num [num] update/answer/freeze/close [date:optional]")
         print("case new [number] [customer] [title] [tier] [opened_at:optional]")
         print("exit")
-        return True
+        return

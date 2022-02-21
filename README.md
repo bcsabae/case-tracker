@@ -2,9 +2,17 @@
 
 This is a simple support ticket tracker CLI app for anyone working in an applicable field. This is still a work in progress, contributions are very welcome.
 
-**DISCLAIMER:** The code can be buggy, do your own review before start to use it for business.
+**DISCLAIMER:** The code can be buggy, do your own review before you start using it for business.
 
 It aims to provide a help for complicated enterprise software that lack some very basic features, like listing due dates based on customer tiers and past interactions. It's intended to be used as an assistance for a more complex solution that is used in your business.
+
+### Quickstart:
+
+`git clone https://github.com/bcsabae/case-tracker` \
+`cd case-tracker` \
+`python3 case-tracker.py`
+
+Note that at the moment only Python 3 is supported.
 
 ## How it works
 

@@ -1,5 +1,6 @@
 import datetime
 import datetime as dt
+from config import Config
 
 STATUS_WAITING_ON_ENGINEER = "Waiting on me"
 STATUS_WAITING_ON_CUSTOMER = "Waiting on customer"
@@ -11,6 +12,7 @@ class Case:
 
     date_format = "%Y.%m.%d. %H:%M"
     today_threshold = "10:00"
+    response_times = []
 
     def __init__(self, num, customer, title, tier, lastResp=None, status=None):
         self.num = int(num)
@@ -140,31 +142,11 @@ class Case:
         return updated_at
 
     def _next_response_due(self, updated_at):
-        delay = 0
-
-        if self.tier == 1:
-            delay += 2
-        elif self.tier == 2:
-            delay += 3
-        elif self.tier == 3:
-            delay += 3
-        elif self.tier == 4:
-            delay += 4
-
+        delay = Config.get_response_time(self.tier, first=False)
         return self._add_weekend(updated_at, delay)
 
     def _first_response_due(self, opened_at):
-        delay = 0
-
-        if self.tier == 1:
-            delay += 1
-        elif self.tier == 2:
-            delay += 1
-        elif self.tier == 3:
-            delay += 2
-        elif self.tier == 4:
-            delay += 4
-
+        delay = Config.get_response_time(self.tier, first=True)
         return self._add_weekend(opened_at, delay)
 
     @staticmethod

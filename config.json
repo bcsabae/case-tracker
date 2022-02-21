@@ -1,0 +1,11 @@
+{
+  "library": "lib2.csv",
+  "response_times": [
+    {"tier": 1, "first_response" : 2, "follow_up_response": 2},
+    {"tier": 2, "first_response" : 1, "follow_up_response": 3},
+    {"tier": 3, "first_response" : 2, "follow_up_response": 3},
+    {"tier": 4, "first_response" : 4, "follow_up_response": 4}
+  ],
+  "today_threshold": "8:00",
+  "time_format": "%Y.%m.%d %H:%M"
+}

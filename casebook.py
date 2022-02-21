@@ -4,6 +4,7 @@ import case
 class Casebook:
     def __init__(self):
         self.cases = []
+        self._library_file = None
         pass
 
     def __str__(self):
@@ -117,14 +118,14 @@ class Casebook:
         if _case is None:
             print("No case with number", num)
             return None
-        _case.customerAnswered(when=when)
+        _case.customer_answered(when=when)
 
     def engineer_answered(self, num):
         _case = self.find_case(num)
         if _case is None:
             print("No case with number", num)
             return None
-        _case.aeAnswered()
+        _case.engineer_answered()
 
     def freeze(self, num):
         _case = self.find_case(num)

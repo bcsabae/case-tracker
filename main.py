@@ -1,6 +1,7 @@
 from case import Case
 from casebook import Casebook
 from console import Console
+from config import Config
 
 cb = Casebook()
 cb.read_csv("lib.csv")
@@ -51,8 +52,16 @@ for case in cb:
 
 print("\n-----\n")
 
+conf = Config(file='config.json')
+
+if Config.date_format:
+    Case.date_format = Config.date_format
+if Config.today_threshold:
+    Case.today_threshold = Config.today_threshold
+Case.response_times = Config.response_times
+
 cb = Casebook()
-cb.read_csv("lib.csv")
+cb.read_csv(Config.library)
 c = Console(cb)
 c.loop()
 

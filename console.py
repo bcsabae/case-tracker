@@ -36,6 +36,8 @@ class Console:
 
     def read_command(self):
         command = input('> ')
+        if not command:
+            return
         if not self.parse_command(command):
             print("Unsupported command")
         return

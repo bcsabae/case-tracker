@@ -13,6 +13,10 @@ It aims to provide a help for complicated enterprise software that lack some ver
 `cd case-tracker` \
 `python3 case-tracker.py`
 
+Make sure to create the library file, it won't be created for you automatically!
+
+`touch lib.csv`
+
 Note that at the moment only Python 3 is supported.
 
 

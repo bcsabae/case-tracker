@@ -5,12 +5,12 @@ STATUS_WAITING_ON_ENGINEER = "Waiting on me"
 STATUS_WAITING_ON_CUSTOMER = "Waiting on customer"
 STATUS_FIRST_RESPONSE = "First response needed"
 STATUS_FROZEN = "Frozen"
-TODAY_THRESHOLD = "10:00"
 
 
 class Case:
 
-    _date_format = "%Y.%m.%d. %H:%M"
+    date_format = "%Y.%m.%d. %H:%M"
+    today_threshold = "10:00"
 
     def __init__(self, num, customer, title, tier, lastResp=None, status=None):
         self.num = int(num)
@@ -19,7 +19,7 @@ class Case:
         self.tier = int(tier)
         self.lastResp = lastResp
         self.status = status
-        try_parse = self._parse_datetime(self.lastResp, self._date_format)
+        try_parse = self._parse_datetime(self.lastResp, self.date_format)
         if try_parse is None:
             exit(-1)
 
@@ -33,7 +33,7 @@ class Case:
         out += self.customer + ';'
         out += self.title + ';'
         out += str(self.tier) + ';'
-        out += self.lastResp.strftime(self._date_format) + ';'
+        out += self.lastResp.strftime(self.date_format) + ';'
         out += self.get_due_string() + ';'
         out += self.status
         return out
@@ -44,7 +44,7 @@ class Case:
         out += self.customer + ';'
         out += self.title + ';'
         out += str(self.tier) + ';'
-        out += self.lastResp.strftime(self._date_format) + ';'
+        out += self.lastResp.strftime(self.date_format) + ';'
         out += self.status
         return out
 
@@ -64,7 +64,7 @@ class Case:
         return c
 
     def customer_answered(self, when=None):
-        updated_at = self._parse_datetime(when, self._date_format)
+        updated_at = self._parse_datetime(when, self.date_format)
         if updated_at is None:
             return
         self.lastResp = updated_at
@@ -89,7 +89,7 @@ class Case:
         if due is None:
             return False
         threshold = self._add_weekend(datetime.datetime.today(), 1)
-        threshold = threshold.replace(hour=int(TODAY_THRESHOLD.split(':')[0]), minute=int(TODAY_THRESHOLD.split(':')[1]))
+        threshold = threshold.replace(hour=int(self.today_threshold.split(':')[0]), minute=int(self.today_threshold.split(':')[1]))
         if due <= threshold:
             return True
         else:
@@ -100,7 +100,7 @@ class Case:
         if due is None:
             return False
         threshold = self._add_weekend(datetime.datetime.today(), 2)
-        threshold = threshold.replace(hour=int(TODAY_THRESHOLD.split(':')[0]), minute=int(TODAY_THRESHOLD.split(':')[1]))
+        threshold = threshold.replace(hour=int(self.today_threshold.split(':')[0]), minute=int(self.today_threshold.split(':')[1]))
         if due <= threshold:
             return True
         else:
@@ -116,10 +116,10 @@ class Case:
         if due is None:
             return ""
         else:
-            return due.strftime(self._date_format)
+            return due.strftime(self.date_format)
 
     def get_last_resp_string(self):
-        return self.lastResp.strftime(self._date_format)
+        return self.lastResp.strftime(self.date_format)
 
     @staticmethod
     def _parse_datetime(when, format):

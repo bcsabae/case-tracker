@@ -1,4 +1,3 @@
-from casebook import Casebook
 
 
 class Console:

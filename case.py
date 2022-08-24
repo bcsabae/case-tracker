@@ -13,14 +13,16 @@ class Case:
     date_format = "%Y.%m.%d. %H:%M"
     today_threshold = "10:00"
     response_times = []
+    isDraft = None
 
-    def __init__(self, num, customer, title, tier, lastResp=None, status=None):
+    def __init__(self, num, customer, title, tier, lastResp=None, status=None, isDraft=None):
         self.num = int(num)
         self.customer = customer
         self.title = title
         self.tier = int(tier)
         self.lastResp = lastResp
         self.status = status
+        self.isDraft = (False if isDraft == None else isDraft)
         try_parse = self._parse_datetime(self.lastResp, self.date_format)
         if try_parse is None:
             exit(-1)
@@ -37,7 +39,8 @@ class Case:
         out += str(self.tier) + ';'
         out += self.lastResp.strftime(self.date_format) + ';'
         out += self.get_due_string() + ';'
-        out += self.status
+        out += self.status + ';'
+        out += self.draft_str()
         return out
 
     def to_csv(self):
@@ -47,7 +50,8 @@ class Case:
         out += self.title + ';'
         out += str(self.tier) + ';'
         out += self.lastResp.strftime(self.date_format) + ';'
-        out += self.status
+        out += self.status + ';'
+        out += self.draft_str()
         return out
 
     @staticmethod
@@ -60,10 +64,27 @@ class Case:
         tier = int(c_arr[3])
         lastResp = c_arr[4]
         status = c_arr[5]
+        isDraft = Case._read_draft_str(c_arr[6])
 
-        c = Case(num, customer, title, tier, lastResp=lastResp, status=status)
+        c = Case(num, customer, title, tier, lastResp=lastResp, status=status, isDraft=isDraft)
 
         return c
+
+    def draft_str(self):
+        if self.isDraft == False:
+            return "Not started"
+        else:
+            return "Draft"
+
+    @staticmethod
+    def _read_draft_str(isDraftStr):
+        if isDraftStr == "Not started":
+           return False
+        elif isDraftStr == "Draft":
+            return True
+        else:
+            print(f"Error: {isDraftStr} cannot be interpreted")
+            raise ValueError
 
     def customer_answered(self, when=None):
         updated_at = self._parse_datetime(when, self.date_format)
@@ -71,12 +92,18 @@ class Case:
             return
         self.lastResp = updated_at
         self.status = STATUS_WAITING_ON_ENGINEER
+        self.isDraft = False
 
     def engineer_answered(self):
         self.status = STATUS_WAITING_ON_CUSTOMER
+        self.isDraft = False
+
+    def drafted(self, undraft=False):
+        self.isDraft = not undraft
 
     def freeze(self):
         self.status = STATUS_FROZEN
+        self.isDraft = False
 
     def get_due_date(self):
         if self.status == STATUS_WAITING_ON_CUSTOMER or self.status == STATUS_FROZEN:

@@ -29,7 +29,7 @@ class Casebook:
     @staticmethod
     def pretty_print(cases):
         space = 12
-        heads = ["Number", "Customer", "Title", "Tier", "Last response", "Next response due", "Status"]
+        heads = ["Number", "Customer", "Title", "Tier", "Last response", "Next response due", "Status", "Drafted"]
         all_spaces = 0
         for head in heads:
             if head is "Last response" or head is "Next response due" or head is "Status" or head is "Title":
@@ -51,6 +51,7 @@ class Casebook:
             print(_case.get_last_resp_string(), end=(' ' * (2 * space - len(_case.get_last_resp_string()))))
             print(_case.get_due_string(), end=(' ' * (2 * space - len(_case.get_due_string()))))
             print(_case.status, end=(' ' * (2 * space - len(_case.status))))
+            print(_case.draft_str(), end=(' ' * (2 * space - len(_case.draft_str()))))
             print("")
 
     def read_csv(self, filename):
@@ -91,7 +92,7 @@ class Casebook:
                 self.cases[ind] = c
                 return True
         return False
-
+        
     def todo(self):
         todo_cases = Casebook()
         for _case in self.cases:
@@ -127,6 +128,13 @@ class Casebook:
             return None
         _case.engineer_answered()
 
+    def drafted(self, num, undraft=False):
+        _case = self.find_case(num)
+        if _case is None:
+            print("No case with number", num)
+            return None
+        _case.drafted(undraft=undraft)
+
     def freeze(self, num):
         _case = self.find_case(num)
         if _case is None:
@@ -135,7 +143,7 @@ class Casebook:
         _case.freeze()
 
     def new_case(self, num, customer, title, tier, opened_at=None):
-        c = case.Case(num, customer, title, tier, lastResp=opened_at)
+        c = case.Case(num, customer, title, tier, lastResp=opened_at, isDraft=False)
         self.cases.append(c)
 
 

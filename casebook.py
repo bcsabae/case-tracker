@@ -77,7 +77,26 @@ class Casebook:
         for _case in self.cases:
             if _case.num == number:
                 return _case
-        return None
+
+        # if no direct match was found, try guessing
+        potential_case = self.guess_case(number)
+
+        if potential_case != None:
+            print(f"Guessed case {potential_case.num}")
+        return potential_case
+    
+    def guess_case(self, short_number):
+        short_num_str = str(short_number)
+        found_case = None
+        for _case in self.cases:
+            num_str = str(_case.num)
+            if num_str.endswith(short_num_str):
+                if found_case == None:
+                    found_case = _case
+                else:
+                    print(f"Ambiguous case numbers with ending {short_number}")
+                    return None
+        return found_case
 
     def remove_case(self, number):
         for ind, _case in enumerate(self.cases):

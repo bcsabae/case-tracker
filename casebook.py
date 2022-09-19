@@ -111,27 +111,31 @@ class Casebook:
                 self.cases[ind] = c
                 return True
         return False
+
+    def _order_cases(self, cases):
+      sorted_cases = sorted(cases, key=lambda case: case.get_due_date())
+      return sorted_cases
         
     def todo(self):
         todo_cases = Casebook()
         for _case in self.cases:
             if _case.is_todo():
                 todo_cases.add_case(_case)
-        return todo_cases
+        return self._order_cases(todo_cases)
 
     def today(self):
         today_cases = Casebook()
         for _case in self.cases:
             if _case.is_due_today():
                 today_cases.add_case(_case)
-        return today_cases
+        return self._order_cases(today_cases)
 
     def tomorrow(self):
         tomorrow_cases = Casebook()
         for _case in self.cases:
             if _case.is_due_tomorrow():
                 tomorrow_cases.add_case(_case)
-        return tomorrow_cases
+        return self._order_cases(tomorrow_cases)
 
     def customer_answered(self, num, when=None):
         _case = self.find_case(num)

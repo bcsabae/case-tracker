@@ -113,7 +113,13 @@ class Casebook:
         return False
 
     def _order_cases(self, cases):
-      sorted_cases = sorted(cases, key=lambda case: case.get_due_date())
+      def sorter(case):
+        possible_due_date = case.get_due_date()
+        if possible_due_date == None:
+          return case.get_last_resp()
+        else:
+          return possible_due_date
+      sorted_cases = sorted(cases, key=sorter)
       return sorted_cases
         
     def todo(self):

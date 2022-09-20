@@ -147,6 +147,9 @@ class Case:
         else:
             return due.strftime(self.date_format)
 
+    def get_last_resp(self):
+        return self.lastResp
+    
     def get_last_resp_string(self):
         return self.lastResp.strftime(self.date_format)
 

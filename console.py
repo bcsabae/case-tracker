@@ -128,6 +128,10 @@ class Console:
             self._casebook.freeze(num)
         elif command == "close":
             self._casebook.remove_case(num)
+        elif command == "draft":
+            self._casebook.drafted(num, undraft=False)
+        elif command == "undraft":
+            self._casebook.drafted(num, undraft=True)
         else:
             self.help_handler()
             return

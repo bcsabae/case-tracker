@@ -29,7 +29,7 @@ class Casebook:
     @staticmethod
     def pretty_print(cases):
         space = 12
-        heads = ["Number", "Customer", "Title", "Tier", "Last response", "Next response due", "Status"]
+        heads = ["Number", "Customer", "Title", "Tier", "Last response", "Next response due", "Status", "Drafted"]
         all_spaces = 0
         for head in heads:
             if head is "Last response" or head is "Next response due" or head is "Status" or head is "Title":
@@ -51,6 +51,7 @@ class Casebook:
             print(_case.get_last_resp_string(), end=(' ' * (2 * space - len(_case.get_last_resp_string()))))
             print(_case.get_due_string(), end=(' ' * (2 * space - len(_case.get_due_string()))))
             print(_case.status, end=(' ' * (2 * space - len(_case.status))))
+            print(_case.draft_str(), end=(' ' * (2 * space - len(_case.draft_str()))))
             print("")
 
     def read_csv(self, filename):
@@ -76,7 +77,26 @@ class Casebook:
         for _case in self.cases:
             if _case.num == number:
                 return _case
-        return None
+
+        # if no direct match was found, try guessing
+        potential_case = self.guess_case(number)
+
+        if potential_case != None:
+            print(f"Guessed case {potential_case.num}")
+        return potential_case
+    
+    def guess_case(self, short_number):
+        short_num_str = str(short_number)
+        found_case = None
+        for _case in self.cases:
+            num_str = str(_case.num)
+            if num_str.endswith(short_num_str):
+                if found_case == None:
+                    found_case = _case
+                else:
+                    print(f"Ambiguous case numbers with ending {short_number}")
+                    return None
+        return found_case
 
     def remove_case(self, number):
         for ind, _case in enumerate(self.cases):
@@ -92,26 +112,36 @@ class Casebook:
                 return True
         return False
 
+    def _order_cases(self, cases):
+      def sorter(case):
+        possible_due_date = case.get_due_date()
+        if possible_due_date == None:
+          return case.get_last_resp()
+        else:
+          return possible_due_date
+      sorted_cases = sorted(cases, key=sorter)
+      return sorted_cases
+        
     def todo(self):
         todo_cases = Casebook()
         for _case in self.cases:
             if _case.is_todo():
                 todo_cases.add_case(_case)
-        return todo_cases
+        return self._order_cases(todo_cases)
 
     def today(self):
         today_cases = Casebook()
         for _case in self.cases:
             if _case.is_due_today():
                 today_cases.add_case(_case)
-        return today_cases
+        return self._order_cases(today_cases)
 
     def tomorrow(self):
         tomorrow_cases = Casebook()
         for _case in self.cases:
             if _case.is_due_tomorrow():
                 tomorrow_cases.add_case(_case)
-        return tomorrow_cases
+        return self._order_cases(tomorrow_cases)
 
     def customer_answered(self, num, when=None):
         _case = self.find_case(num)
@@ -127,6 +157,13 @@ class Casebook:
             return None
         _case.engineer_answered()
 
+    def drafted(self, num, undraft=False):
+        _case = self.find_case(num)
+        if _case is None:
+            print("No case with number", num)
+            return None
+        _case.drafted(undraft=undraft)
+
     def freeze(self, num):
         _case = self.find_case(num)
         if _case is None:
@@ -135,7 +172,7 @@ class Casebook:
         _case.freeze()
 
     def new_case(self, num, customer, title, tier, opened_at=None):
-        c = case.Case(num, customer, title, tier, lastResp=opened_at)
+        c = case.Case(num, customer, title, tier, lastResp=opened_at, isDraft=False)
         self.cases.append(c)
 
 

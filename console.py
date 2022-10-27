@@ -83,7 +83,10 @@ class Console:
             if word in handlers:
                 command = handlers[word]
                 if hasattr(command, '__call__'):
-                    command(command_words[idx+1:])
+                    try:
+                        command(command_words[idx+1:])
+                    except ValueError:
+                        print("Unexpected error")
                     return True
                 else:
                     handlers = command

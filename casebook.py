@@ -99,6 +99,10 @@ class Casebook:
         return found_case
 
     def remove_case(self, number):
+        _case = self.find_case(number)
+        if _case is None:
+          return False
+        number = _case.num
         for ind, _case in enumerate(self.cases):
             if _case.num == number:
                 self.cases.pop(ind)
